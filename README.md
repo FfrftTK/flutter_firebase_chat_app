@@ -2,15 +2,27 @@
 
 A new Flutter application.
 
+
 ## Getting Started
+### freezed関連ファイルの生成
+プロジェクトのルートで以下を叩く．
+```bash
+flutter pub pub run build_runner build
+```
 
-This project is a starting point for a Flutter application.
+### Firebase関連ファイルの追加
+`google-services.json` と `GoogleService-Info.plist`をFirebaseプロジェクトからダウンロード．
+これらを適切な場所に置く．([詳しくはここ](https://firebase.google.com/docs/flutter/setup?hl=en#add_flutterfire_plugins))
 
-A few resources to get you started if this is your first Flutter project:
+---
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## Getting Started
+### Generate freezed files
+Run the following command in your project root.
+```bash
+flutter pub pub run build_runner build
+```
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Add Firebase config files
+Get `google-services.json` and `GoogleService-Info.plist`from your Firebase project.
+Then add these files to proper directory. ([check here](https://firebase.google.com/docs/flutter/setup?hl=en#add_flutterfire_plugins))
