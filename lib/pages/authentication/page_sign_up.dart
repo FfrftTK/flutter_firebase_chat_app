@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 class PageSignUp extends StatelessWidget {
+  const PageSignUp();
   static const routeName = '/sign-up';
   @override
   Widget build(BuildContext context) {
@@ -21,14 +22,13 @@ class PageSignUp extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(top: hp * 0.05),
             child: EmailPasswordForm(
-              onSuccess: (email, password) {
+              onValidationPassed: (email, password) {
                 userStateController.createUser(
-                  context: context,
                   email: email,
                   password: password,
                 );
               },
-              onFailed: (_, __) {},
+              onValidationFailed: (_, __) {},
               submitButtonLabel: 'Sign Up',
             ),
           ),

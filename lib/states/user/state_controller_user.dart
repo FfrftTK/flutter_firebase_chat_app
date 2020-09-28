@@ -1,33 +1,46 @@
 import 'package:chat_app/pages/pages.dart';
+import 'package:chat_app/repositories/repositories.dart';
 import 'package:chat_app/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:state_notifier/state_notifier.dart';
 
 import 'state_user.dart';
 
 export 'state_user.dart';
 
-class UserStateController extends StateNotifier<UserState> with LocatorMixin {
+class UserStateController<T extends AuthenticationRepository,
+        U extends UserRepository> extends StateNotifier<UserState>
+    with LocatorMixin {
   UserStateController() : super(const UserState()) {}
+  T get authRepository => read();
+  U get userRepository => read();
+  ReusableDialogs get reusableDialog => read();
 
-  /// authentication related
+  @override
+  void initState() {
+    userRepository.fetchCurrentUser().then((value) {
+      state = state.copyWith(currentUser: value);
+    });
+  }
+
+  /// Authentication related
   Future<void> signIn({
-    @required BuildContext context,
     @required String email,
     @required String password,
   }) async {
     try {
-      final authClient = read<FirebaseAuthClient>();
-      await authClient.signInWithEmailAndPassword(
+      await authRepository.signIn(
         email: email,
         password: password,
       );
-      // update current user
-      state = state.copyWith(currentUser: authClient.currentUser);
+
+      // Update current user
+      state =
+          state.copyWith(currentUser: await userRepository.fetchCurrentUser());
     } on Exception {
-      read<ReusableDialogs>().showSimpleNotificationDialog(
-        context,
+      reusableDialog.showSimpleNotificationDialog(
         contentText: 'Failed to sign in',
         submitText: 'OK',
       );
@@ -35,32 +48,31 @@ class UserStateController extends StateNotifier<UserState> with LocatorMixin {
   }
 
   Future<void> signOut() async {
-    final authClient = read<FirebaseAuthClient>();
-    await authClient.signOut();
-    // update current user
-    state = state.copyWith(currentUser: authClient.currentUser);
+    await authRepository.signOut();
+    // Update current user
+    state = state.copyWith(currentUser: null);
   }
 
   Future<void> createUser({
-    @required BuildContext context,
     @required String email,
     @required String password,
   }) async {
     try {
-      final authClient = read<FirebaseAuthClient>();
-      await authClient.createUserWithEmailAndPassword(
+      await authRepository.createUser(
         email: email,
         password: password,
       );
 
-      // update current user with sign in
-      await signIn(context: context, email: email, password: password);
+      // Update current user with sign in
+      await signIn(email: email, password: password);
 
-      // pop until root
-      Navigator.popUntil(context, ModalRoute.withName(PageRoot.routeName));
+      // Add current user data to DB
+      await userRepository.addUserData(state.currentUser);
+
+      // Pop until root
+      Get.until((route) => Get.currentRoute == PageRoot.routeName);
     } on Exception {
-      read<ReusableDialogs>().showSimpleNotificationDialog(
-        context,
+      reusableDialog.showSimpleNotificationDialog(
         contentText: 'Failed to create account',
         submitText: 'OK',
       );
