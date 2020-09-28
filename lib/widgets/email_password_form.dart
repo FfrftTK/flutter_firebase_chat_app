@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 class EmailPasswordForm extends StatefulWidget {
   const EmailPasswordForm({
-    @required this.onSuccess,
-    @required this.onFailed,
+    @required this.onValidationPassed,
+    @required this.onValidationFailed,
     this.submitButtonLabel = 'Sign In',
   });
-  final Function(String, String) onSuccess;
-  final Function(String, String) onFailed;
+  final Function(String, String) onValidationPassed;
+  final Function(String, String) onValidationFailed;
   final String submitButtonLabel;
 
   @override
@@ -18,14 +18,12 @@ class EmailPasswordForm extends StatefulWidget {
 class LoginFormState extends State<EmailPasswordForm> {
   final _formKey = GlobalKey<FormState>();
 
-  bool failed = false;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    failed = false;
   }
 
   @override
@@ -83,10 +81,10 @@ class LoginFormState extends State<EmailPasswordForm> {
                 child: Text(widget.submitButtonLabel),
                 onPressed: () async {
                   if (_formKey.currentState.validate()) {
-                    widget.onSuccess(
+                    widget.onValidationPassed(
                         emailController.text, passwordController.text);
                   } else {
-                    widget.onFailed(
+                    widget.onValidationFailed(
                         emailController.text, passwordController.text);
                   }
                 },

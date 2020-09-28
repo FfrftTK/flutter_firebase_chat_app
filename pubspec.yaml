@@ -16,8 +16,9 @@ dependencies:
   flutter_dotenv:
   flutter_state_notifier:
   email_validator:
-  cupertino_icons: ^0.1.3
-  fluro:
+  cupertino_icons:
+  cloud_firestore:
+  get:
 
 dev_dependencies:
   flutter_test:

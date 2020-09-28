@@ -1,9 +1,9 @@
-import 'package:chat_app/router.dart';
+import 'package:chat_app/repositories/repositories.dart';
 import 'package:chat_app/states/states.dart';
 import 'package:chat_app/utils/utils.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -31,29 +31,38 @@ Future run({@required Environment environment}) async {
       break;
   }
   WidgetsFlutterBinding.ensureInitialized();
-  // initialize firebase
-  await Firebase.initializeApp();
 
-  // set app page routes
-  final router = Router();
-  setPageRoutes(router);
+  // Initialize firebase
+  await Firebase.initializeApp();
 
   runApp(
 //    const App(),
     MultiProvider(
       providers: [
-        // router
-        Provider(create: (context) => router),
-        // utils
+        // Utils
         Provider(create: (context) => const ReusableDialogs()),
+
+        // Repositories
         Provider(
-            create: (context) => FirebaseAuthClient(FirebaseAuth.instance)),
-        // states
-        StateNotifierProvider<HomeStateController, HomeState>(
-          create: (_) => HomeStateController(),
-        ),
+            create: (context) => AuthenticationRepositoryWithFirebase(
+                FirebaseAuthClient(FirebaseAuth.instance))),
+        Provider(
+            create: (context) => UserRepositoryWithFirebase(
+                FirebaseAuthClient(FirebaseAuth.instance),
+                FirestoreClient(FirebaseFirestore.instance))),
+        Provider(
+            create: (context) => RoomRepositoryWithFirebase(
+                FirebaseAuthClient(FirebaseAuth.instance),
+                FirestoreClient(FirebaseFirestore.instance))),
+
+        // Global States
         StateNotifierProvider<UserStateController, UserState>(
-          create: (_) => UserStateController(),
+          create: (_) => UserStateController<
+              AuthenticationRepositoryWithFirebase,
+              UserRepositoryWithFirebase>(),
+        ),
+        StateNotifierProvider<HomeStateController, HomeState>(
+          create: (_) => HomeStateController<RoomRepositoryWithFirebase>(),
         ),
       ],
       child: const App(),

@@ -14,6 +14,11 @@ flutter pub pub run build_runner build
 `google-services.json` と `GoogleService-Info.plist`をFirebaseプロジェクトからダウンロード．
 これらを適切な場所に置く．([詳しくはここ](https://firebase.google.com/docs/flutter/setup?hl=en#add_flutterfire_plugins))
 
+### CloudFunctionsのデプロイ
+`functions`以下の関数をCloudFunctionsにデプロイする．([参考](https://firebase.google.com/docs/functions/get-started?hl=ja))
+node10以降は無料プランだと使えないっぽい(2020/09/28)．
+
+
 ---
 
 ## Getting Started

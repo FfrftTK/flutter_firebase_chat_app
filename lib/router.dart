@@ -1,28 +1,38 @@
 import 'package:chat_app/pages/pages.dart';
-import 'package:fluro/fluro.dart';
-import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-void setPageRoutes(Router router) {
-  router
-    ..define(
-      PageHome.routeName,
-      handler: _getSimpleTransitionHandler(page: PageHome()),
-    )
-    ..define(
-      PageRoot.routeName,
-      handler: _getSimpleTransitionHandler(page: PageRoot()),
-    )
-    ..define(
-      PageSignUp.routeName,
-      handler: _getSimpleTransitionHandler(page: PageSignUp()),
-    )
-    ..define(
-      PageSignIn.routeName,
-      handler: _getSimpleTransitionHandler(page: PageSignIn()),
-    );
-}
+import 'repositories/repositories.dart';
 
-// Returns a handler that only returns page with no params
-Handler _getSimpleTransitionHandler({@required Widget page}) {
-  return Handler(handlerFunc: (context, params) => page);
-}
+final List<GetPage> getPages = [
+  GetPage(name: PageRoot.routeName, page: () => const PageRoot()),
+  // home
+  GetPage(name: PageHome.routeName, page: () => const PageHome()),
+  // auth
+  GetPage(name: PageSignUp.routeName, page: () => const PageSignUp()),
+  GetPage(name: PageSignIn.routeName, page: () => const PageSignIn()),
+  // room
+  GetPage(
+    name: PageRoom.routeName,
+    // TODO(FfrftTK): Inject repository
+    page: () => PageRoom.wrapped<RoomRepositoryWithFirebase>(),
+  ),
+];
+//
+//typedef WidgetPageBuilder = Widget Function(
+//  BuildContext context,
+//  RouteSettings settings,
+//);
+//
+//final Map<String, WidgetPageBuilder> argumentRequiredRoutes = {
+//  PageRoom.routeName: (context, settings) =>
+//      PageRoom.wrapped<RoomRepositoryWithFirebase>(
+//          settings.arguments as EAppRoom),
+//};
+//
+//Route<dynamic> onGenerateRoute(RouteSettings settings) {
+//  return MaterialPageRoute<void>(
+//    builder: (context) =>
+//        argumentRequiredRoutes[settings.name](context, settings),
+//    settings: settings,
+//  );
+//}
