@@ -31,3 +31,8 @@ flutter pub pub run build_runner build
 ### Add Firebase config files
 Get `google-services.json` and `GoogleService-Info.plist`from your Firebase project.
 Then add these files to proper directory. ([check here](https://firebase.google.com/docs/flutter/setup?hl=en#add_flutterfire_plugins))
+
+---
+
+## Update Histories
+- [#3](https://github.com/FfrftTK/flutter_firebase_chat_app/pull/3) Room create & Lonely chat has implemented
